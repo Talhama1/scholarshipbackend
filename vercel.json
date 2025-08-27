@@ -1,0 +1,20 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "server.js",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/123/scholarship",
+        "methods": ["POST", "GET"],
+        "dest": "/server.js"
+      }
+    ],
+    "env": {
+      "MONGODB_URI": "mongodb+srv://scholarship:scholarship@cluster0.paswc29.mongodb.net/ScholarshipPost"
+    }
+  }
+  
