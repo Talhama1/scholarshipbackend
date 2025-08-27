@@ -1,8 +1,9 @@
-// server.js
+ // server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+require('dotenv').config(); // load .env variables
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,16 +13,13 @@ app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// MongoDB Connection
-mongoose.connect(
-  'mongodb+srv://scholarship:scholarship@cluster0.paswc29.mongodb.net/ScholarshipPost',
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-)
-.then(() => console.log('MongoDB connected'))
-.catch((err) => console.error(err));
+// MongoDB Connection (use env var)
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('✅ MongoDB connected'))
+.catch((err) => console.error('❌ MongoDB connection error:', err));
 
 // Schema
 const ScholarshipPostSchema = new mongoose.Schema({
@@ -56,23 +54,21 @@ app.post('/123/scholarship', async (req, res) => {
   }
 });
 
-// GET - Get all scholarships
+// GET - All scholarships
 app.get('/123/scholarship', async (req, res) => {
   try {
     const posts = await ScholarshipPost.find();
-
     const formattedPosts = posts.map((post) => ({
       ...post.toObject(),
       deadline: post.deadline ? post.deadline.toISOString().split('T')[0] : null,
     }));
-
     res.json(formattedPosts);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// GET - Get scholarship by ID
+// GET - By ID
 app.get('/123/scholarship/:id', async (req, res) => {
   try {
     const post = await ScholarshipPost.findById(req.params.id);
@@ -89,12 +85,12 @@ app.get('/123/scholarship/:id', async (req, res) => {
   }
 });
 
-// DELETE - Delete scholarship by name (case-insensitive)
+// DELETE - By Name
 app.delete('/123/scholarship/by-name/:name', async (req, res) => {
   try {
     const name = req.params.name;
     const deleted = await ScholarshipPost.findOneAndDelete({
-      name: { $regex: `^${name}$`, $options: 'i' }, // case-insensitive match
+      name: { $regex: `^${name}$`, $options: 'i' },
     });
 
     if (!deleted) {
@@ -108,4 +104,4 @@ app.delete('/123/scholarship/by-name/:name', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
