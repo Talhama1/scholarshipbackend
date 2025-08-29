@@ -24,7 +24,7 @@ const ScholarshipForm = ({ onScholarshipAdded }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://192.168.1.2:3000/123/scholarship', {
+      const response = await fetch('http://localhost:3000/123/scholarship', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -61,7 +61,7 @@ const ScholarshipForm = ({ onScholarshipAdded }) => {
     if (!window.confirm(`Are you sure you want to delete "${deleteName}"?`)) return;
 
     try {
-      const response = await fetch(`http://192.168.1.2:3000/123/scholarship/by-name/${encodeURIComponent(deleteName)}`, {
+      const response = await fetch(`http://localhost:3000/123/scholarship/by-name/${encodeURIComponent(deleteName)}`, {
         method: 'DELETE',
       });
 
